@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Receipt To-Do</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #f0ebe3;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    h1 {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 13px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 24px;
+    }
+
+    /* Input area */
+    .controls {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 32px;
+      width: 100%;
+      max-width: 340px;
+    }
+
+    .controls input {
+      flex: 1;
+      padding: 10px 12px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 13px;
+      border: 1.5px dashed #bbb;
+      background: #fff;
+      outline: none;
+      border-radius: 2px;
+    }
+
+    .controls input:focus {
+      border-color: #888;
+    }
+
+    .controls button {
+      padding: 10px 16px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 13px;
+      background: #222;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      border-radius: 2px;
+      letter-spacing: 1px;
+    }
+
+    .controls button:hover { background: #444; }
+
+    /* Receipt */
+    .receipt-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 340px;
+    }
+
+    /* Torn top edge */
+    .receipt-top {
+      width: 100%;
+      height: 18px;
+      background: white;
+      clip-path: polygon(
+        0% 100%, 2% 0%, 4% 100%, 6% 0%, 8% 100%, 10% 0%, 12% 100%,
+        14% 0%, 16% 100%, 18% 0%, 20% 100%, 22% 0%, 24% 100%,
+        26% 0%, 28% 100%, 30% 0%, 32% 100%, 34% 0%, 36% 100%,
+        38% 0%, 40% 100%, 42% 0%, 44% 100%, 46% 0%, 48% 100%,
+        50% 0%, 52% 100%, 54% 0%, 56% 100%, 58% 0%, 60% 100%,
+        62% 0%, 64% 100%, 66% 0%, 68% 100%, 70% 0%, 72% 100%,
+        74% 0%, 76% 100%, 78% 0%, 80% 100%, 82% 0%, 84% 100%,
+        86% 0%, 88% 100%, 90% 0%, 92% 100%, 94% 0%, 96% 100%,
+        98% 0%, 100% 100%
+      );
+      filter: drop-shadow(0 -1px 2px rgba(0,0,0,0.06));
+    }
+
+    .receipt {
+      background: white;
+      width: 100%;
+      padding: 20px 24px 28px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+    }
+
+    /* Torn bottom edge */
+    .receipt-bottom {
+      width: 100%;
+      height: 18px;
+      background: white;
+      clip-path: polygon(
+        0% 0%, 2% 100%, 4% 0%, 6% 100%, 8% 0%, 10% 100%, 12% 0%,
+        14% 100%, 16% 0%, 18% 100%, 20% 0%, 22% 100%, 24% 0%,
+        26% 100%, 28% 0%, 30% 100%, 32% 0%, 34% 100%, 36% 0%,
+        38% 100%, 40% 0%, 42% 100%, 44% 0%, 46% 100%, 48% 0%,
+        50% 100%, 52% 0%, 54% 100%, 56% 0%, 58% 100%, 60% 0%,
+        62% 100%, 64% 0%, 66% 100%, 68% 0%, 70% 100%, 72% 0%,
+        74% 100%, 76% 0%, 78% 100%, 80% 0%, 82% 100%, 84% 0%,
+        86% 100%, 88% 0%, 90% 100%, 92% 0%, 94% 100%, 96% 0%,
+        98% 100%, 100% 0%
+      );
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    /* Receipt header */
+    .receipt-header {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .receipt-header .store-name {
+      font-size: 18px;
+      font-weight: bold;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+
+    .receipt-header .tagline {
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: #888;
+      margin-top: 2px;
+    }
+
+    .receipt-header .date {
+      font-size: 10px;
+      color: #aaa;
+      margin-top: 8px;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px dashed #ccc;
+      margin: 12px 0;
+    }
+
+    .receipt-label {
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #aaa;
+      margin-bottom: 10px;
+    }
+
+    /* Tasks */
+    .task-list {
+      list-style: none;
+      min-height: 40px;
+    }
+
+    .task-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 6px 0;
+      font-size: 13px;
+      cursor: pointer;
+      border-bottom: 1px dotted #eee;
+      user-select: none;
+      transition: color 0.2s;
+    }
+
+    .task-list li:last-child { border-bottom: none; }
+
+    .task-list li .bullet {
+      flex-shrink: 0;
+      color: #aaa;
+      font-size: 11px;
+      margin-top: 1px;
+    }
+
+    .task-list li.done {
+      color: #bbb;
+      text-decoration: line-through;
+    }
+
+    .task-list li.done .bullet { color: #ddd; }
+
+    .empty-msg {
+      font-size: 11px;
+      color: #ccc;
+      text-align: center;
+      padding: 12px 0;
+      letter-spacing: 1px;
+    }
+
+    /* Footer */
+    .receipt-footer {
+      text-align: center;
+      margin-top: 4px;
+    }
+
+    .receipt-footer .total-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #aaa;
+      margin-bottom: 4px;
+    }
+
+    .receipt-footer .thank-you {
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: #bbb;
+      margin-top: 10px;
+    }
+
+    .receipt-footer .barcode {
+      margin-top: 12px;
+      font-size: 28px;
+      letter-spacing: -2px;
+      color: #222;
+      line-height: 1;
+    }
+
+    /* Print button */
+    .print-btn {
+      margin-top: 20px;
+      padding: 10px 24px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      background: transparent;
+      border: 1.5px dashed #999;
+      color: #666;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+
+    .print-btn:hover { border-color: #333; color: #333; }
+
+    /* Print styles */
+    @media print {
+      body { background: white; padding: 0; }
+      .controls, .print-btn, h1 { display: none; }
+      .receipt-wrap { max-width: 100%; }
+      .receipt { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Receipt To-Do</h1>
+
+  <div class="controls">
+    <input type="text" id="taskInput" placeholder="add a task..." />
+    <button onclick="addTask()">+ Add</button>
+  </div>
+
+  <div class="receipt-wrap">
+    <div class="receipt-top"></div>
+    <div class="receipt">
+      <div class="receipt-header">
+        <div class="store-name">TO-DO LIST</div>
+        <div class="tagline">★ get it done ★</div>
+        <div class="date" id="receiptDate"></div>
+      </div>
+
+      <hr class="divider" />
+      <div class="receipt-label">items</div>
+
+      <ul class="task-list" id="taskList">
+        <li class="empty-msg" id="emptyMsg">no items yet</li>
+      </ul>
+
+      <hr class="divider" />
+
+      <div class="receipt-footer">
+        <div class="total-line">
+          <span>TOTAL TASKS</span>
+          <span id="totalCount">0</span>
+        </div>
+        <div class="total-line">
+          <span>COMPLETED</span>
+          <span id="doneCount">0</span>
+        </div>
+        <div class="total-line">
+          <span>REMAINING</span>
+          <span id="remainCount">0</span>
+        </div>
+        <div class="thank-you">* you got this *</div>
+        <div class="barcode">||| || ||| || || |||</div>
+      </div>
+    </div>
+    <div class="receipt-bottom"></div>
+  </div>
+
+  <button class="print-btn" onclick="window.print()">🖨 print receipt</button>
+
+  <script>
+    let tasks = JSON.parse(localStorage.getItem('receipt-tasks') || '[]');
+
+    function save() {
+      localStorage.setItem('receipt-tasks', JSON.stringify(tasks));
+    }
+
+    function render() {
+      const list = document.getElementById('taskList');
+      const emptyMsg = document.getElementById('emptyMsg');
+      list.innerHTML = '';
+
+      if (tasks.length === 0) {
+        list.innerHTML = '<li class="empty-msg">no items yet</li>';
+      } else {
+        tasks.forEach((task, i) => {
+          const li = document.createElement('li');
+          li.className = task.done ? 'done' : '';
+          li.innerHTML = `<span class="bullet">${task.done ? '✓' : '○'}</span><span>${task.text}</span>`;
+          li.onclick = () => toggle(i);
+          list.appendChild(li);
+        });
+      }
+
+      const total = tasks.length;
+      const done = tasks.filter(t => t.done).length;
+      document.getElementById('totalCount').textContent = total;
+      document.getElementById('doneCount').textContent = done;
+      document.getElementById('remainCount').textContent = total - done;
+    }
+
+    function addTask() {
+      const input = document.getElementById('taskInput');
+      const text = input.value.trim();
+      if (!text) return;
+      tasks.push({ text, done: false });
+      input.value = '';
+      save();
+      render();
+    }
+
+    function toggle(i) {
+      tasks[i].done = !tasks[i].done;
+      save();
+      render();
+    }
+
+    document.getElementById('taskInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') addTask();
+    });
+
+    // Set date
+    const now = new Date();
+    document.getElementById('receiptDate').textContent =
+      now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+    render();
+  </script>
+</body>
+</html>
