@@ -37,23 +37,14 @@
       height: 26px;
       background: linear-gradient(
         to bottom,
-        #ebebeb 0%,
-        #c8c8c8 18%,
-        #9a9a9a 50%,
-        #bebebe 82%,
-        #e5e5e5 100%
+        #ebebeb 0%, #c8c8c8 18%, #9a9a9a 50%, #bebebe 82%, #e5e5e5 100%
       );
       border-radius: 5px;
-      box-shadow:
-        0 3px 0 #707070,
-        0 5px 20px rgba(0,0,0,0.7),
-        inset 0 1px 0 rgba(255,255,255,0.85);
+      box-shadow: 0 3px 0 #707070, 0 5px 20px rgba(0,0,0,0.7),
+                  inset 0 1px 0 rgba(255,255,255,0.85);
       z-index: 10;
     }
-
-    /* End caps */
-    .rail-bar::before,
-    .rail-bar::after {
+    .rail-bar::before, .rail-bar::after {
       content: '';
       position: absolute;
       top: -8px;
@@ -73,10 +64,185 @@
       transform: translateX(-50%);
       font-size: 10px;
       letter-spacing: 3px;
-      color: #2e2e2e;
+      color: #2a2a2a;
       text-transform: uppercase;
       pointer-events: none;
       white-space: nowrap;
+    }
+
+    /* ── Spike ── */
+    .spike-wrap {
+      position: absolute;
+      bottom: 24px;
+      right: 52px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 30;
+      transition: filter 0.2s;
+    }
+
+    .spike-wrap.spike-active {
+      filter: drop-shadow(0 0 14px rgba(255, 210, 80, 0.75));
+    }
+
+    /* Drop zone label shown while dragging */
+    .spike-drop-label {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 8px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #444;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+    body.dragging-receipt .spike-drop-label { opacity: 1; }
+    body.dragging-receipt.over-spike .spike-drop-label { color: #c8a040; }
+
+    .spike-zone {
+      position: relative;
+      width: 110px;
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    /* Metal rod */
+    .spike-rod {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 100%;
+      background: linear-gradient(to right, #888 0%, #e0e0e0 40%, #aaa 70%, #999 100%);
+      border-radius: 3px;
+      z-index: 52;
+    }
+    /* Pointed tip */
+    .spike-rod::before {
+      content: '';
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-bottom: 16px solid #c0c0c0;
+      filter: drop-shadow(0 -1px 2px rgba(0,0,0,0.3));
+    }
+
+    /* Receipt pile sits in front of rod base but behind tip */
+    .spike-pile {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      top: 0;
+      pointer-events: none;
+    }
+
+    .spiked-receipt {
+      position: absolute;
+      left: 50%;
+      width: 88px;
+      background: #f6f6f6;
+      padding: 5px 8px 10px;
+      font-family: 'Courier New', monospace;
+      font-size: 7px;
+      color: #777;
+      box-shadow: 1px 2px 10px rgba(0,0,0,0.4);
+      transform-origin: top center;
+      z-index: 48;
+      /* torn bottom */
+      clip-path: polygon(
+        0 0, 100% 0, 100% calc(100% - 3px),
+        93% 100%, 86% calc(100% - 3px), 79% 100%, 72% calc(100% - 3px),
+        65% 100%, 58% calc(100% - 3px), 51% 100%, 44% calc(100% - 3px),
+        37% 100%, 30% calc(100% - 3px), 23% 100%, 16% calc(100% - 3px),
+        9% 100%, 2% calc(100% - 3px), 0 100%
+      );
+    }
+
+    /* Spike hole on receipt */
+    .spiked-receipt::after {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.12);
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+    }
+
+    .spiked-receipt .s-num {
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      letter-spacing: 2px;
+      line-height: 1;
+      margin-bottom: 3px;
+      margin-top: 2px;
+      color: #444;
+    }
+    .spiked-receipt .s-div {
+      border: none;
+      border-top: 1px dashed #ddd;
+      margin: 3px 0;
+    }
+    .spiked-receipt .s-task {
+      font-size: 7px;
+      color: #aaa;
+      text-decoration: line-through;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding: 1px 0;
+    }
+
+    /* Spike base block */
+    .spike-base {
+      width: 96px;
+      height: 22px;
+      background: linear-gradient(to bottom, #888 0%, #555 45%, #333 100%);
+      border-radius: 5px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.1);
+      position: relative;
+      z-index: 60;
+    }
+    /* screws */
+    .spike-base::before, .spike-base::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #888, #333);
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.6);
+    }
+    .spike-base::before { left: 10px; }
+    .spike-base::after  { right: 10px; }
+
+    .spike-count {
+      font-size: 8px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #383838;
+      text-align: center;
+      margin-top: 5px;
+      height: 12px;
     }
 
     /* ── Hanging Receipt ── */
@@ -93,8 +259,12 @@
       touch-action: none;
       transition: filter 0.1s;
     }
-    .receipt-hang:active  { cursor: grabbing; }
-    .receipt-hang.lifted  { z-index: 100; filter: drop-shadow(0 12px 28px rgba(0,0,0,0.7)); }
+    .receipt-hang:active { cursor: grabbing; }
+    .receipt-hang.lifted {
+      z-index: 100;
+      filter: drop-shadow(0 14px 28px rgba(0,0,0,0.75));
+      transition: none;
+    }
 
     /* Binder clip */
     .clip {
@@ -129,7 +299,6 @@
       line-height: 1.5;
       color: #222;
       box-shadow: 2px 8px 24px rgba(0,0,0,0.55);
-      /* torn bottom */
       clip-path: polygon(
         0 0, 100% 0, 100% calc(100% - 5px),
         96% 100%, 92% calc(100% - 5px), 88% 100%, 84% calc(100% - 5px),
@@ -137,8 +306,7 @@
         64% 100%, 60% calc(100% - 5px), 56% 100%, 52% calc(100% - 5px),
         48% 100%, 44% calc(100% - 5px), 40% 100%, 36% calc(100% - 5px),
         32% 100%, 28% calc(100% - 5px), 24% 100%, 20% calc(100% - 5px),
-        16% 100%, 12% calc(100% - 5px), 8% 100%, 4% calc(100% - 5px),
-        0 100%
+        16% 100%, 12% calc(100% - 5px), 8% 100%, 4% calc(100% - 5px), 0 100%
       );
     }
 
@@ -156,18 +324,8 @@
       color: #999;
       letter-spacing: 1px;
     }
-    .r-divider {
-      border: none;
-      border-top: 1px dashed #ccc;
-      margin: 8px 0;
-    }
-    .r-label {
-      font-size: 8px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: #bbb;
-      margin-bottom: 6px;
-    }
+    .r-divider { border: none; border-top: 1px dashed #ccc; margin: 8px 0; }
+    .r-label { font-size: 8px; letter-spacing: 2px; text-transform: uppercase; color: #bbb; margin-bottom: 6px; }
     .r-tasks { list-style: none; }
     .r-tasks li {
       display: flex;
@@ -183,21 +341,8 @@
     .r-tasks li .mk { flex-shrink: 0; color: #aaa; font-size: 9px; margin-top: 1px; }
     .r-tasks li.done { color: #c0c0c0; text-decoration: line-through; }
     .r-tasks li.done .mk { color: #d8d8d8; }
-    .r-footer {
-      font-size: 8px;
-      text-align: center;
-      color: #ccc;
-      letter-spacing: 2px;
-      margin-top: 6px;
-    }
-    .r-barcode {
-      font-size: 22px;
-      text-align: center;
-      letter-spacing: -1px;
-      color: #333;
-      margin-top: 4px;
-      line-height: 1;
-    }
+    .r-footer { font-size: 8px; text-align: center; color: #ccc; letter-spacing: 2px; margin-top: 6px; }
+    .r-barcode { font-size: 22px; text-align: center; letter-spacing: -1px; color: #333; margin-top: 4px; line-height: 1; }
 
     /* ── Compose Panel ── */
     #compose {
@@ -209,7 +354,6 @@
       align-items: flex-start;
     }
 
-    /* Mini preview */
     .preview-wrap {
       flex-shrink: 0;
       width: 130px;
@@ -223,55 +367,19 @@
         94% 100%, 88% calc(100% - 4px), 82% 100%, 76% calc(100% - 4px),
         70% 100%, 64% calc(100% - 4px), 58% 100%, 52% calc(100% - 4px),
         46% 100%, 40% calc(100% - 4px), 34% 100%, 28% calc(100% - 4px),
-        22% 100%, 16% calc(100% - 4px), 10% 100%, 4% calc(100% - 4px),
-        0 100%
+        22% 100%, 16% calc(100% - 4px), 10% 100%, 4% calc(100% - 4px), 0 100%
       );
     }
-    .preview-num {
-      font-size: 30px;
-      font-weight: bold;
-      text-align: center;
-      letter-spacing: 2px;
-      line-height: 1.1;
-      color: #222;
-    }
-    .preview-divider {
-      border: none;
-      border-top: 1px dashed #ccc;
-      margin: 6px 0;
-    }
-    .preview-tasks {
-      list-style: none;
-    }
-    .preview-tasks li {
-      font-size: 8px;
-      color: #555;
-      padding: 2px 0;
-      border-bottom: 1px dotted #e0e0e0;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+    .preview-num { font-size: 30px; font-weight: bold; text-align: center; letter-spacing: 2px; line-height: 1.1; color: #222; }
+    .preview-divider { border: none; border-top: 1px dashed #ccc; margin: 6px 0; }
+    .preview-tasks { list-style: none; }
+    .preview-tasks li { font-size: 8px; color: #555; padding: 2px 0; border-bottom: 1px dotted #e0e0e0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .preview-tasks li:last-child { border-bottom: none; }
     .preview-empty { font-size: 8px; color: #ccc; font-style: italic; }
 
-    /* Inputs */
-    .compose-right {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .compose-label {
-      font-size: 9px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: #444;
-    }
-    .row {
-      display: flex;
-      gap: 8px;
-    }
+    .compose-right { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+    .compose-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: #444; }
+    .row { display: flex; gap: 8px; }
     .row input {
       flex: 1;
       background: #242424;
@@ -296,34 +404,11 @@
       border-radius: 2px;
     }
     .btn-add:hover { background: #383838; color: #bbb; }
-
-    .pending-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      max-height: 70px;
-      overflow-y: auto;
-    }
-    .pending-list li {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      color: #555;
-    }
+    .pending-list { list-style: none; display: flex; flex-direction: column; gap: 3px; max-height: 70px; overflow-y: auto; }
+    .pending-list li { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #555; }
     .pending-list li span { flex: 1; color: #777; }
-    .pending-list li button {
-      background: none;
-      border: none;
-      color: #3a3a3a;
-      cursor: pointer;
-      font-size: 11px;
-      padding: 0 3px;
-      line-height: 1;
-    }
+    .pending-list li button { background: none; border: none; color: #3a3a3a; cursor: pointer; font-size: 11px; padding: 0 3px; }
     .pending-list li button:hover { color: #777; }
-
     .btn-print {
       align-self: flex-start;
       padding: 10px 28px;
@@ -340,12 +425,7 @@
       box-shadow: 0 2px 10px rgba(0,0,0,0.4);
     }
     .btn-print:hover { background: #fff; }
-    .btn-print:disabled {
-      background: #252525;
-      color: #333;
-      box-shadow: none;
-      cursor: default;
-    }
+    .btn-print:disabled { background: #252525; color: #333; box-shadow: none; cursor: default; }
   </style>
 </head>
 <body>
@@ -354,11 +434,21 @@
 <div id="rail-area">
   <div class="rail-bar"></div>
   <div class="rail-hint" id="hint">compose a receipt below ↓</div>
+
+  <!-- Spike -->
+  <div class="spike-wrap" id="spike">
+    <div class="spike-drop-label">drop to complete</div>
+    <div class="spike-zone" id="spike-zone">
+      <div class="spike-rod"></div>
+      <div class="spike-pile" id="spike-pile"></div>
+    </div>
+    <div class="spike-base"></div>
+    <div class="spike-count" id="spike-count"></div>
+  </div>
 </div>
 
 <!-- ── Compose Panel ── -->
 <div id="compose">
-
   <div class="preview-wrap">
     <div class="preview-num" id="preview-num">001</div>
     <div class="preview-divider"></div>
@@ -376,18 +466,24 @@
     <ul class="pending-list" id="pendingList"></ul>
     <button class="btn-print" id="printBtn" onclick="printReceipt()" disabled>print receipt</button>
   </div>
-
 </div>
 
 <script>
-  let receipts    = [];
-  let pending     = [];
-  let nextOrder   = 1;
-  let isDragging  = false;
+  let receipts   = [];
+  let spiked     = [];
+  let pending    = [];
+  let nextOrder  = 1;
+  let isDragging = false;
 
-  const railArea = document.getElementById('rail-area');
+  const railArea  = document.getElementById('rail-area');
+  const spikeEl   = document.getElementById('spike');
+  const spikeZone = document.getElementById('spike-zone');
 
-  // ── Pending ──────────────────────────────────
+  // Rotation/offset patterns for spiked pile
+  const ROTS  = [-13, 9, -5, 15, -8, 11, -16, 6, -10, 4, -7, 14, -11, 8, -3];
+  const XOFFS = [0, -5, 6, -3, 8, -7, 4, -9, 2, -4, 7, -2, 5, -6, 1];
+
+  // ── Pending ──────────────────────────────────────────
 
   function addPending() {
     const inp = document.getElementById('taskInput');
@@ -405,12 +501,10 @@
   }
 
   function renderCompose() {
-    // pending list
     document.getElementById('pendingList').innerHTML = pending
       .map((t, i) => `<li><span>○ ${t}</span><button onclick="removePending(${i})">✕</button></li>`)
       .join('');
 
-    // preview
     const prev = document.getElementById('preview-tasks');
     prev.innerHTML = pending.length
       ? pending.map(t => `<li>○ ${t}</li>`).join('')
@@ -419,15 +513,14 @@
     document.getElementById('printBtn').disabled = pending.length === 0;
   }
 
-  // ── Print ─────────────────────────────────────
+  // ── Print ────────────────────────────────────────────
 
   function printReceipt() {
     if (!pending.length) return;
-
     const railRect = railArea.getBoundingClientRect();
     const id  = Date.now();
-    const gap = 220;
-    const x   = Math.min(100 + (receipts.length * gap), railRect.width - 110);
+    const gap = 230;
+    const x   = Math.min(100 + receipts.length * gap, railRect.width - 160);
 
     receipts.push({
       id,
@@ -445,7 +538,7 @@
     renderRail();
   }
 
-  // ── Rail ──────────────────────────────────────
+  // ── Rail ─────────────────────────────────────────────
 
   function renderRail() {
     document.querySelectorAll('.receipt-hang').forEach(el => el.remove());
@@ -476,18 +569,16 @@
           <div class="r-barcode">|||  ||  |||  ||  |||</div>
         </div>`;
 
-      // Task toggles (don't fire during drag)
       el.querySelectorAll('.r-tasks li').forEach(li => {
         li.addEventListener('click', e => {
           if (isDragging) return;
           e.stopPropagation();
           const rec = receipts.find(r => r.id === +li.dataset.rid);
-          rec.tasks[+li.dataset.ti].done ^= true;
+          if (rec) rec.tasks[+li.dataset.ti].done ^= true;
           renderRail();
         });
       });
 
-      // Drag
       el.addEventListener('mousedown',  e => startDrag(e, r.id));
       el.addEventListener('touchstart', e => startDrag(e, r.id), { passive: false });
 
@@ -495,48 +586,122 @@
     });
   }
 
-  // ── Drag ──────────────────────────────────────
+  // ── Spike ─────────────────────────────────────────────
+
+  function renderSpike() {
+    const pile = document.getElementById('spike-pile');
+    pile.innerHTML = '';
+
+    // Dynamically grow the spike zone height so rod stays visible above pile
+    const pileHeight = Math.max(140, 20 + spiked.length * 4);
+    spikeZone.style.minHeight = pileHeight + 'px';
+
+    spiked.forEach((r, i) => {
+      const el = document.createElement('div');
+      el.className = 'spiked-receipt';
+
+      const rot  = ROTS[i % ROTS.length];
+      const xoff = XOFFS[i % XOFFS.length];
+      const bot  = i * 4;
+
+      el.style.cssText = `
+        transform: translateX(calc(-50% + ${xoff}px)) rotate(${rot}deg);
+        bottom: ${bot}px;
+        z-index: ${45 + i};
+      `;
+
+      el.innerHTML = `
+        <div class="s-num">${r.order}</div>
+        <div class="s-div"></div>
+        ${r.tasks.map(t => `<div class="s-task">✓ ${t.text}</div>`).join('')}
+      `;
+
+      pile.appendChild(el);
+    });
+
+    const countEl = document.getElementById('spike-count');
+    countEl.textContent = spiked.length
+      ? `${spiked.length} done`
+      : '';
+  }
+
+  function isOverSpike(cx, cy) {
+    const rect = spikeEl.getBoundingClientRect();
+    // Generous hit area: extend upward by 60px to catch rod area
+    return cx >= rect.left - 10 && cx <= rect.right + 10 &&
+           cy >= rect.top - 60  && cy <= rect.bottom + 10;
+  }
+
+  // ── Drag ─────────────────────────────────────────────
 
   function startDrag(e, id) {
     if (e.target.closest('.r-tasks')) return;
     e.preventDefault();
 
-    const rec     = receipts.find(r => r.id === id);
-    const railW   = railArea.getBoundingClientRect().width;
+    const rec    = receipts.find(r => r.id === id);
+    const railW  = railArea.getBoundingClientRect().width;
     const startCX = e.touches ? e.touches[0].clientX : e.clientX;
-    const startX  = rec.x;
-    const el      = document.querySelector(`.receipt-hang[data-id="${id}"]`);
+    const startCY = e.touches ? e.touches[0].clientY : e.clientY;
+    const startX = rec.x;
+    const el = document.querySelector(`.receipt-hang[data-id="${id}"]`);
 
     isDragging = true;
     el?.classList.add('lifted');
+    document.body.classList.add('dragging-receipt');
 
     function onMove(e) {
       const cx = e.touches ? e.touches[0].clientX : e.clientX;
+      const cy = e.touches ? e.touches[0].clientY : e.clientY;
+
       rec.x = Math.max(60, Math.min(railW - 60, startX + cx - startCX));
       if (el) el.style.left = rec.x + 'px';
+
+      if (isOverSpike(cx, cy)) {
+        spikeEl.classList.add('spike-active');
+        document.body.classList.add('over-spike');
+      } else {
+        spikeEl.classList.remove('spike-active');
+        document.body.classList.remove('over-spike');
+      }
     }
 
-    function onEnd() {
+    function onEnd(e) {
       isDragging = false;
       el?.classList.remove('lifted');
-      document.removeEventListener('mousemove',  onMove);
-      document.removeEventListener('mouseup',    onEnd);
-      document.removeEventListener('touchmove',  onMove);
-      document.removeEventListener('touchend',   onEnd);
+      document.body.classList.remove('dragging-receipt', 'over-spike');
+      spikeEl.classList.remove('spike-active');
+
+      const cx = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+      const cy = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+
+      if (isOverSpike(cx, cy)) {
+        // Spike it
+        receipts = receipts.filter(r => r.id !== id);
+        spiked.push(rec);
+        renderRail();
+        renderSpike();
+      }
+
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup',   onEnd);
+      document.removeEventListener('touchmove', onMove);
+      document.removeEventListener('touchend',  onEnd);
     }
 
-    document.addEventListener('mousemove',  onMove);
-    document.addEventListener('mouseup',    onEnd);
-    document.addEventListener('touchmove',  onMove, { passive: false });
-    document.addEventListener('touchend',   onEnd);
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup',   onEnd);
+    document.addEventListener('touchmove', onMove, { passive: false });
+    document.addEventListener('touchend',  onEnd);
   }
 
-  // ── Keys ──────────────────────────────────────
+  // ── Init ─────────────────────────────────────────────
+
   document.getElementById('taskInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') addPending();
   });
 
   renderCompose();
+  renderSpike();
 </script>
 </body>
 </html>
